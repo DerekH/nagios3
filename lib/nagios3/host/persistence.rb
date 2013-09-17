@@ -101,20 +101,19 @@ module Nagios3
         def parse(config)
           params = { :contacts => [], :groups => [] }
           params[:id] = $1.strip if config.match param_regexp("_ID")
-          params[:name] = $1.strip if config.match param_regexp("name")
           params[:host_name] = $1.strip if config.match param_regexp("host_name")
           params[:alias] = $1.strip if config.match param_regexp("alias")
           params[:address] = $1.strip if config.match param_regexp("address")
+          params[:parents] = $1.strip if config.match param_regexp("parents")
           params[:use] = $1.strip if config.match param_regexp("use")
-          params[:register] = $1.strip if config.match param_regexp("register")
           params[:contacts] = $1.strip.split(/,/) if config.match param_regexp("contacts")
           params[:groups] = $1.strip.split(/,/) if config.match param_regexp("contactgroups")
           params[:first_notification_delay] = $1.strip if config.match param_regexp("first_notification_delay")
           params[:notification_interval] = $1.strip if config.match param_regexp("notification_interval")
           params[:notification_period] = $1.strip if config.match param_regexp("notification_period")
           params[:notification_options] = $1.strip if config.match param_regexp("notification_options")
-
           params[:notifications_enabled] = $1 if config.match param_regexp("notifications_enabled")
+          
           Nagios3::Host.new(params)
         end
         

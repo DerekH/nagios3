@@ -42,14 +42,16 @@ module Nagios3
 
       def to_s
         host = "\n"
-        host << "Name: #{@name}\n" unless @name.nil?
         host << "HostName: #{@host_name}\n" unless @host_name.nil?
         host << "Alias: #{@alias}\n" unless @alias.nil?
         host << "Address: #{@address}\n" unless @address.nil?
         host << "Use: #{@use}\n" unless @use.nil?
-        host << "Register: #{@register}\n" unless @register.nil?
-        host << "Log Path: #{@log_path}\n" if @register
-        host << "Current State: #{current_state}\n" if @register
+        host << "Parents: #{@parents}\n" unless @parents.nil?
+        host << "FirstNotificationDelay: #{@first_notification_delay}\n" unless @first_notification_delay.nil?
+        host << "NotificationsEnabled: #{@notifications_enabled}\n" unless @notifications_enabled.nil?
+        host << "NotificationInterval: #{@notification_interval}\n" unless @notification_interval.nil?
+        host << "NotificationPeriod: #{@notification_period}\n" unless @notification_period.nil?
+        host << "NotificationOptions: #{@notification_options}\n" unless @notification_options.nil?
         host
       end
 
