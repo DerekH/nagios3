@@ -8,13 +8,13 @@
 module Nagios3
   class Host
     module Persistence
-      
+
       def state
         state = nil
         regexp = /hoststatus\s*\{\s*host_name=#{self.host_name}(.*?)current_state=(\d)(.*?)\}/m
-        
+
         File.read(Nagios3.status_path).scan(regexp) { |match| state = $2 }
-        
+
         case state
         when "0"
           "UP"
@@ -24,13 +24,13 @@ module Nagios3
           "UNKNOWN"
         end
       end
-      
+
       def save
         if Nagios3::Host.configured?(self.id); raise DuplicateHostError; end
         File.open(Nagios3.hosts_path, "a") { |f| f.puts(self.to_config) }
         self
       end
-      
+
       def update
         unless Nagios3::Host.configured?(self.id); raise HostNotFoundError; end
         new_config = File.read(Nagios3.hosts_path).gsub(
@@ -39,7 +39,7 @@ module Nagios3
         File.open(Nagios3.hosts_path, "w") { |f| f.puts(new_config) }
         self
       end
-      
+
       def update_attributes(params = {})
         params.each do |key, value|
           method = (key.to_s + "=").to_sym
@@ -47,7 +47,7 @@ module Nagios3
         end
         self.update
       end
-      
+
       def destroy
         unless Nagios3::Host.configured?(self.id); raise HostNotFoundError; end
         new_config = File.read(Nagios3.hosts_path).gsub(
@@ -56,11 +56,11 @@ module Nagios3
         File.open(Nagios3.hosts_path, "w") { |f| f.puts(new_config) }
         self
       end
-      
+
       def self.included(klass)
         klass.extend(ClassMethods)
       end
-      
+
       module ClassMethods
         def configured?(id)
           if File.read(Nagios3.hosts_path).match(object_regexp(id))
@@ -69,27 +69,27 @@ module Nagios3
             false
           end
         end
-        
+
         def find(*args)
           case args.first
           when :all then find_every
           else           find_by_id(args.first)
           end
         end
-        
+
         def object_regexp(id)
           /define host\s*\{([^\{]*?_ID\s#{id}\n[^\}]*?)\}\s/m
         end
-        
+
       private
         def find_every
           object_cache, hosts = File.read(Nagios3.hosts_path), []
-          object_cache.scan(/define host\s*\{(.*?)\}/m) do |match| 
+          object_cache.scan(/define host\s*\{(.*?)\}/m) do |match|
             hosts << parse($1)
           end
           hosts
         end
-        
+
         def find_by_id(id)
           objects, host = File.read(Nagios3.hosts_path), nil
           if objects.match(object_regexp(id))
@@ -97,7 +97,7 @@ module Nagios3
           end
           host
         end
-        
+
         def parse(config)
           params = { :contacts => [], :groups => [] }
           params[:id] = $1.strip if config.match param_regexp("_ID")
@@ -113,16 +113,18 @@ module Nagios3
           params[:notification_period] = $1.strip if config.match param_regexp("notification_period")
           params[:notification_options] = $1.strip if config.match param_regexp("notification_options")
           params[:notifications_enabled] = $1 if config.match param_regexp("notifications_enabled")
-          
+          params[:snmp_community] = $1 if config.match param_regexp("_SNMPCOMMUNITY")
+          params[:snmp_version] = $1 if config.match param_regexp("_SNMPVERSION")
+
           Nagios3::Host.new(params)
         end
-        
+
         def param_regexp(name)
           /\s#{name}\s+(.+?)[\n;]/
         end
-        
+
       end
-      
+
     end
   end
 end
