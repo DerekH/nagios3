@@ -122,6 +122,14 @@ SQL
           modem_hash[:upstream_power] = cable_modem.upstream_power
           modem_hash[:downstream_snr] = cable_modem.downstream_snr
           modem_hash[:downstream_power] = cable_modem.downstream_power
+
+          if cable_modem.respond_to?(:rx_power)
+            modem_hash[:rx_power] = cable_modem.rx_power
+          end
+
+          if cable_modem.respond_to?(:max_rx_power)
+            modem_hash[:max_rx_power] = cable_modem.max_rx_power
+          end
         end
       end
     end
