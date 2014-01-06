@@ -14,11 +14,12 @@ module Nagios3
   autoload :TimePeriod,         'nagios3/time_period'
   autoload :HostProcessor,      'nagios3/host_processor'
   autoload :ServiceProcessor,   'nagios3/service_processor'
+  autoload :Modem,              'nagios3/modem'
 
   class << self
     attr_accessor :hosts_path, :services_path, :contacts_path
     attr_accessor :host_escalations_path, :service_escalations_path
-    attr_accessor :time_periods_path
+    attr_accessor :time_periods_path, :modems_path
 
     attr_accessor :status_path, :object_path
     attr_accessor :host_perfdata_path, :service_perfdata_path
@@ -41,6 +42,8 @@ module Nagios3
   class ServiceNotFoundError < Nagios3Error; end
   class DuplicateContactError < Nagios3Error; end
   class ContactNotFoundError < Nagios3Error; end
+  class DuplicateModemError < Nagios3Error; end
+  class ModemNotFoundError < Nagios3Error; end
 
 end
 
@@ -57,6 +60,7 @@ if defined? Rails
         c.time_periods_path = conf['time_periods_path']
         c.status_path = conf['status_path']
         c.object_path = conf['object_path']
+        c.modems_path = conf['modems_path']
       end
     end
   end
