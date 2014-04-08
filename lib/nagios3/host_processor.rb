@@ -113,15 +113,21 @@ SQL
         cable_modem = CableModem.find_by_mac_address(modem_hash[:host_name].upcase, :include => :cmts)
         modem_hash[:id] = "modem"
         if cable_modem
-          modem_hash[:cm_state] = cable_modem.status
-          modem_hash[:ip_address] = cable_modem.ip_address
-          modem_hash[:cmts_address] = cable_modem.cmts.try(:ip_address)
-          modem_hash[:upstream_interface] = cable_modem.upstream_interface
+          modem_hash[:cm_state] =             cable_modem.status
+          modem_hash[:ip_address] =           cable_modem.ip_address
+          modem_hash[:cmts_address] =         cable_modem.cmts.try(:ip_address)
+          modem_hash[:upstream_interface] =   cable_modem.upstream_interface
           modem_hash[:downstream_interface] = cable_modem.downstream_interface
-          modem_hash[:upstream_snr] = cable_modem.upstream_snr
-          modem_hash[:upstream_power] = cable_modem.upstream_power
-          modem_hash[:downstream_snr] = cable_modem.downstream_snr
-          modem_hash[:downstream_power] = cable_modem.downstream_power
+          modem_hash[:upstream_snr] =         cable_modem.upstream_snr
+          modem_hash[:upstream_power] =       cable_modem.upstream_power
+          modem_hash[:downstream_snr] =       cable_modem.downstream_snr
+          modem_hash[:downstream_power] =     cable_modem.downstream_power
+          modem_hash[:us_fec_unerroreds] =    cable_modem.us_fec_unerroreds
+          modem_hash[:us_fec_corrected] =     cable_modem.us_fec_corrected
+          modem_hash[:us_fec_uncorrectable] = cable_modem.us_fec_uncorrectable
+          modem_hash[:ds_fec_unerroreds] =    cable_modem.ds_fec_unerroreds
+          modem_hash[:ds_fec_corrected] =     cable_modem.ds_fec_corrected
+          modem_hash[:ds_fec_uncorrectable] = cable_modem.ds_fec_uncorrectable
 
           if cable_modem.respond_to?(:rx_power)
             modem_hash[:rx_power] = cable_modem.rx_power
